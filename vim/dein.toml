@@ -1,0 +1,105 @@
+# Required:
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+build='make'
+
+[[plugins]]
+repo = 'liuchengxu/vista.vim'
+hook_add = '''
+" if file was updated vista is automatically updated
+let g:vista_update_on_text_changed = 1
+let g:vista_default_executive = 'vim_lsp'
+nnoremap <silent><Space>v : <C-u>Vista!!<CR>
+'''
+
+[[plugins]] #resize paines
+repo = 'simeji/winresizer'
+
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+
+[[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+
+[[plugins]]
+repo = 'yossi-ryu/twitvim'
+hook_add = '''
+let twitvim_token_file = expand("~/.config/vim/.twitvim.token")
+let twitvim_force_ssl = 1
+let twitvim_count = 100
+nnoremap <silent><Space>f : <C-u>FriendsTwitter<CR>
+nnoremap <silent><Space>p : <C-u>PosttoTwitter<CR>
+'''
+
+ [[plugins]]
+repo =  'roxma/nvim-yarp'
+
+[[plugins]]
+repo =  'roxma/vim-hug-neovim-rpc'
+
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+depends = 'vim-lsp-settings'
+hook_add='''
+noremap <silent> <C-]> : <C-u>LspDefinition<CR>
+noremap <silent> K : <C-u>LspDocumentDiagnostics<CR>
+noremap <silent> gd : <C-u>LspDeclaration<CR>
+noremap <silent> gr : <C-u>LspReferences<CR>
+noremap <silent> gn : <C-u>LspNextError<CR>
+noremap <silent> gp : <C-u>LspPreviousError<CR>
+
+noremap <silent> gh : <C-u>LspHover<CR>
+noremap <silent> gtd : <C-u>LspTypeDefinition<CR>
+noremap <silent> gth : <C-u>LspTypeHierarchy<CR>
+noremap <silent> gst : <C-u>LspStatus<CR>
+noremap <silent> <F2> : <C-u>LspRename<CR>
+let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_highlight_references_enabled = 1
+'''
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+hook_add='''
+let g:lsp_settings = {
+\   'texlab': {
+\   'whitelist' : ['plaintex', 'tex','sty']
+\   },
+\  'efm-langserver': {
+\    'disabled': 0,
+\   },
+\}
+'''
+# end of section lsp
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+depends=['vimproc']
+hook_add='''
+let g:quickrun_config = get(g:, 'quickrun_config', {})
+let g:quickrun_config._ = {
+	\ 'runner'    : 'vimproc',
+	\ 'runner/vimproc/updatetime' : 60,
+	\ 'outputter' : 'error',
+	\ 'outputter/error/success' : 'buffer',
+	\ 'outputter/error/error'   : 'quickfix',
+	\ 'outputter/buffer/split'  : ':rightbelow 8sp',
+	\ 'outputter/buffer/close_on_empty' : 1,
+	\ }
+'''
+
+# this is plugin for show git diff at left part
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'tyru/open-browser.vim'
+hook_add = '''
+let g:netrw_nogx = 1 " disable netrw's gx mapping.
+nmap gx <Plug>(openbrowser-smart-search)
+vmap gx <Plug>(openbrowser-smart-search)
+'''

@@ -1,0 +1,386 @@
+snippet main
+	int main(){
+		${1}
+		return 0;
+	}
+
+snippet kyopro
+	#include<iostream>
+	#include<cstdio>
+	#include<algorithm>
+	#include<vector>
+	#include<string>
+	#include<array>
+	#include<map>
+	#include<set>
+	#include<queue>
+
+	using namespace std;
+	#define int long long
+	#define ll long long
+	#define pii std::pair<int,int>
+	#define pdd std::pair<double,double>
+	#define INF (1LL << 33)
+	#define REP(i, n) for (int i = 0; i < (int)(n); i++)
+	#define SHOW(p) if(test) cout << #p" : " << p <<endl;
+	bool test = false;
+	${1}
+	signed main(){
+        test = true;
+		${2}
+		return 0;
+	}
+
+snippet chmax
+	template <class T>
+	[[maybe_unused]] bool chmax(T& a, T b) {
+		if (a < b) {
+			a = b;
+			return true;
+		}
+		return false;
+	};
+
+snippet chmin
+	template <class T>
+	[[maybe_unused]] bool chmin(T& a, T b) {
+		if (a > b) {
+			a = b;
+			return true;
+		}
+		return false;
+	};
+
+snippet edge
+	template <class T>
+	struct edge {
+		int to;
+		T cost;
+		edge(int to) : to(to), cost(static_cast<T>(1)) {}
+		edge(int to, T cost) : to(to), cost(cost) {}
+		operator int() const { return to; }
+	};
+	template <class T>
+	bool operator>(const edge<T>& t1, const edge<T>& t2)
+	{
+		return t1.cost > t2.cost;
+	}
+	template <class T>
+	bool operator==(const edge<T>& t1, const edge<T>& t2)
+	{
+		return t1.cost == t2.cost;
+	}
+	template <class T>
+	bool operator<(const edge<T>& t1, const edge<T>& t2)
+	{
+		return !(t1 > t2 || t1 == t2);
+	}
+
+snippet node
+	template <class T>
+	struct node {
+		int edge;
+		T cost;
+		node(int edge, T cost) : edge(edge), cost(cost) {}
+		node(int edge) : edge(edge), cost(static_cast<T>(1)) {}
+	};
+	template <class T>
+	bool operator>(const node<T>& t1, const node<T>& t2)
+	{
+		return t1.cost > t2.cost;
+	}
+	template <class T>
+	bool operator==(const node<T>& t1, const node<T>& t2)
+	{
+		return t1.cost == t2.cost;
+	}
+	template <class T>
+	bool operator<(const node<T>& t1, const node<T>& t2)
+	{
+		return !(t1 > t2 || t1 == t2);
+	}
+
+snippet dijikstra
+	template <class T>
+	::std::vector<T> dijkstra(::std::vector<::std::vector<edge<T>>> graph, int size, int start)
+	{
+		::std::vector<T> costs;
+		::std::vector<bool> decided;
+		::std::priority_queue<node<T>, ::std::vector<node<T>>, ::std::greater<node<T>>> waiting;
+		// cost, edge num(0index)
+
+		// init
+		const long long INF = 1LL << 33;
+		costs.resize(size, INF);
+		decided.resize(size, false);
+		costs.at(start) = 0;
+		waiting.push(::node<T>(start, costs.at(start)));
+		while (!waiting.empty()) {
+			node<T> selected = waiting.top();
+			waiting.pop();
+			if (test) {
+				cout << "selected_edge is " << selected.edge << ", cost: " << selected.cost << endl;
+			}
+			decided.at(selected.edge) = true;
+			for (auto edge : graph.at(selected.edge)) {
+				if (decided.at(edge.to)) {
+					continue;
+				}
+				if (chmin(costs.at(edge.to), selected.cost + edge.cost))
+					waiting.push(::node<T>(edge.to, costs.at(edge.to)));
+				if (test) {
+					cout << "from: " << selected.edge << " to: " << edge.to;
+					cout << " cost of the edge: " << edge.to << " cost at the node: " << costs.at(edge.to) << endl;
+				}
+			}
+		}
+		return costs;
+	}
+
+snippet bellmanford
+    template <class T>
+    ::std::pair<bool, ::std::vector<T>> bellmanford(::std::vector<::std::vector<edge<T>>> graph, int node_size, int edge_size, int start)
+    {
+        return bellmanford(graph, static_cast<size_t>(node_size), static_cast<size_t>(edge_size), static_cast<size_t>(start));
+    }
+    template <class T>
+    ::std::pair<bool, ::std::vector<T>> bellmanford(::std::vector<::std::vector<edge<T>>> graph, size_t node_size, size_t edge_size, size_t start)
+    {
+        ::std::vector<T> costs;
+        ::std::vector<bool> decided;
+        bool updated = true;
+        node<T> selected;
+        int turn = 0;
+        // cost, edge num(0index)
+
+        // init
+        costs.resize(node_size, INF);
+        decided.resize(node_size, false);
+        costs.at(start) = 0;
+        while (updated) {
+            updated = false;
+            for (size_t i = 0; i < node_size; i++) {
+                selected = node<T>(static_cast<int>(i), costs.at(static_cast<size_t>(i)));
+                if (selected.cost == INF)
+                    continue;
+                for (auto edge : graph.at(static_cast<size_t>(selected.edge))) {
+                    if (chmin(costs.at(static_cast<size_t>(edge.to)), edge.cost + selected.cost)) {
+                        if (test) {
+                            std::cout << "edge " << edge.to << " cost: " << costs.at(static_cast<size_t>(edge.to)) << " was updated." << std::endl;
+                        }
+                        updated = true;
+                    }
+                }
+            }
+            if (test) {
+                std::cout << "turn: " << turn << " ended." << std::endl;
+            }
+            if (turn > static_cast<int>(edge_size)) {
+                turn = -1;
+                break;
+            }
+            turn++;
+        }
+        return {(turn != -1), costs};
+    }
+
+snippet gcd
+    template <class T>
+    T gcd(T x, T y)
+    {
+        if (y == static_cast<T>(0)) {
+            return x;
+        }
+        if (y == static_cast<T>(1)) {
+            return static_cast<T>(1);
+        }
+        return gcd(y, x % y);
+    }
+
+snippet ext_gcd
+    template <class T>
+    [[maybe_unused]] T ext_gcd(T a, T b, T& x, T& y) {
+        // returns gcd(a,b)
+        // ax + by = gcd(a,b)
+        if (b == 0) {
+            x = 1;
+            y = 0;
+            return a;
+        }
+        T d = ext_gcd(b, a % b, y, x);
+        y -= a / b * x;
+        return d;
+    }
+
+snippet SegmenTree
+    template <typename T>
+    class SegmentTree
+    {
+    private:
+        size_t n;
+        T default_T;
+        std::vector<T> data;
+        std::function<T(T, T)> f;
+
+    public:
+        // initialize
+        template <typename T1>
+        SegmentTree(T1 n_, T default_T = INF, std::function<T(T, T)> f = [](T a, T b) { return (a > b ? b : a); }) : default_T(default_T), f(f)
+        {
+            this->n = 1;
+            while (this->n < static_cast<size_t>(n_)) {
+                this->n *= 2;
+            }
+            this->data.resize(2 * this->n - 1);
+            for (size_t i = 0; i < 2 * this->n - 1; i++) {
+                this->data.at(i) = this->default_T;
+            }
+        }
+        template <typename T1>
+        SegmentTree(T1 n_, std::function<T(T, T)> f) : SegmentTree(n_, INF, f)
+        {
+        }
+
+        // update
+        template <typename T1>
+        [[maybe_unused]] bool update(T1 index, T new_value) {
+            size_t new_index = static_cast<size_t>(index) + n - 1;
+            if (this->data.at(new_index) == new_value) {
+                return false;
+            }
+            this->data.at(new_index) = new_value;
+            while (new_index > 0) {
+                new_index = (new_index - 1) / 2;
+                this->data.at(new_index) = this->f(this->data.at(new_index * 2 + 1), this->data.at(new_index * 2 + 2));
+            }
+            return true;
+        }
+
+        // get the value of [from, to)
+        template <typename T1>
+        T query(T1 from, T1 to, size_t k = 0, size_t l = 0, size_t r = -1) const
+        {
+            r = (r == -1 ? this->n : r);
+            if (test)
+                cout << "l: " << l << " r: " << r << endl;
+            if (r <= static_cast<size_t>(from) || static_cast<size_t>(to) <= l) {
+                if (test)
+                    cout << "out of range." << endl;
+                return this->default_T;
+            }
+            if (from <= l && r <= to) {
+                return this->data.at(k);
+            } else {
+                auto vl = this->query(from, to, k * 2 + 1, l, (l + r) / 2);
+                auto vr = this->query(from, to, k * 2 + 2, (l + r) / 2, r);
+                if (test) {
+                    cout << "vl: " << vl << " vr: " << vr << endl;
+                }
+                return this->f(vl, vr);
+            }
+        }
+        size_t get_n() const
+        {
+            return this->n;
+        }
+
+        template <typename T1>
+        T get_data(T1 index) const
+        {
+            return this->data.at(static_cast<size_t>(index));
+        }
+    };
+
+    template <typename T>
+    std::ostream& operator<<(std::ostream& lhs, const SegmentTree<T>& sgt)
+    {
+        lhs << "data(" << sgt.get_n() << ")";
+        for (size_t i = 0; i < 2 * sgt.get_n() - 1; i++) {
+            lhs << " " << sgt.get_data(i);
+        }
+        return lhs;
+    };
+
+snippet binaryindexedtree
+    template <typename T>
+    class BinaryIndexedTree
+    {
+    private:
+        size_t n;
+        T default_T;
+        std::vector<T> data;
+        //std::function<T(T, T)> f;
+
+    public:
+        // initialize
+        template <typename T1>
+        BinaryIndexedTree(T1 n_, T default_T = static_cast<T>(0)) : n(static_cast<size_t>(n_)), default_T(default_T)
+        {
+            this->data.resize(this->n, 0);
+        }
+
+        // update
+        template <typename T1>
+        [[maybe_unused]] bool update(T1 index, T new_value) {
+            return this->add(index, new_value - this->get(index));
+        }
+
+        template <typename T1>
+        [[maybe_unused]] bool add(T1 i, T x) {
+            if (x == static_cast<T>(0))
+                return false;
+            for (int index = i; index < n; index |= index + 1) {
+                this->data.at(index) += x;
+            }
+            return true;
+        }
+
+        template <typename T1>
+        T get(T1 index) const
+        {
+            if (static_cast<size_t>(index) == static_cast<size_t>(0)) {
+                return this->sum(index);
+            }
+            return this->sum(index - 1, index);
+        }
+
+        // sum to index i
+        template <typename T1>
+        T sum(T1 to) const
+        {
+            T s = static_cast<T>(0);
+            for (int index = to - 1; index >= 0; index = (index & (index + 1)) - 1) {
+                s += this->data.at(index);
+            }
+            return s;
+        }
+        template <typename T1>
+        T sum(T1 from, T1 to) const
+        {
+            if (static_cast<size_t>(from) == static_cast<size_t>(0)) {
+                return this->sum(to);
+            }
+            return this->sum(to) - this->sum(from - 1);
+        }
+
+        size_t get_n() const
+        {
+            return this->n;
+        }
+
+        template <typename T1>
+        T get_data(T1 index) const
+        {
+            return this->data.at(static_cast<size_t>(index));
+        }
+    };
+
+    template <typename T>
+    std::ostream& operator<<(std::ostream& lhs, const BinaryIndexedTree<T>& bit)
+    {
+        lhs << "data(" << bit.get_n() << ")";
+        for (size_t i = 0; i < bit.get_n(); i++) {
+            lhs << " " << bit.get_data(i);
+        }
+        return lhs;
+    };
