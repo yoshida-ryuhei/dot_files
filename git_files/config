@@ -1,0 +1,24 @@
+[color]
+	ui = auto
+
+[alias]
+	sgl = log --oneline --graph --all --decorate
+	st = status
+	sw = switch
+	rs = restore
+	br = branch
+	checkout = !echo -e "checkout is deprecated\nInstead use switch or restore" 1>&2 && exit 1
+	ch = !echo -e "checkout is deprecated\nInstead use switch or restore" 1>&2 && exit 1
+	commitam = commit -am
+	com = commit -m
+	difff = diff --color-words
+	ps = push
+	pl =  !git pull . && git submodule  update
+
+[core]
+	editor = "vim"
+	attributesfile = ~/.config/git/attributes
+	excludesfile = ~/.config/git/gitignore_global
+
+[pull]
+	rebase = false
