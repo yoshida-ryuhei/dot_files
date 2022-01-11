@@ -18,29 +18,12 @@ nnoremap <silent><Space>v : <C-u>Vista!!<CR>
 [[plugins]] #resize paines
 repo = 'simeji/winresizer'
 
-
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
 repo = 'osyo-manga/vim-precious'
 depends = ['context_filetype.vim']
-
-[[plugins]]
-repo = 'yossi-ryu/twitvim'
-hook_add = '''
-let twitvim_token_file = expand("~/.config/vim/.twitvim.token")
-let twitvim_force_ssl = 1
-let twitvim_count = 100
-nnoremap <silent><Space>f : <C-u>FriendsTwitter<CR>
-nnoremap <silent><Space>p : <C-u>PosttoTwitter<CR>
-'''
-
- [[plugins]]
-repo =  'roxma/nvim-yarp'
-
-[[plugins]]
-repo =  'roxma/vim-hug-neovim-rpc'
 
 [[plugins]]
 repo = 'prabirshrestha/vim-lsp'
@@ -58,6 +41,8 @@ noremap <silent> gtd : <C-u>LspTypeDefinition<CR>
 noremap <silent> gth : <C-u>LspTypeHierarchy<CR>
 noremap <silent> gst : <C-u>LspStatus<CR>
 noremap <silent> <F2> : <C-u>LspRename<CR>
+noremap <silent> <F3> : <C-u>LspDocumentFormat<CR>
+let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
 let g:lsp_diagnostics_float_cursor = 1
 let g:lsp_highlight_references_enabled = 1
 '''
@@ -66,13 +51,13 @@ let g:lsp_highlight_references_enabled = 1
 repo = 'mattn/vim-lsp-settings'
 hook_add='''
 let g:lsp_settings = {
-\   'texlab': {
-\   'whitelist' : ['plaintex', 'tex','sty']
-\   },
-\  'efm-langserver': {
-\    'disabled': 0,
-\   },
-\}
+	\   'texlab': {
+	\   'whitelist' : ['plaintex', 'tex','sty']
+	\   },
+	\  'efm-langserver': {
+	\    'disabled': 0,
+	\   },
+	\}
 '''
 # end of section lsp
 

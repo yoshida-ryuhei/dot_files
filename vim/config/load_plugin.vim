@@ -20,10 +20,12 @@ if dein#load_state(s:dein_dir)
   let g:rc_dir    = expand('~/.config/vim/rc')
   let s:toml      = g:rc_dir . '/dein.toml'
   let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
+  let s:lazy_ddc_toml = g:rc_dir . '/dein_lazy_ddc.toml'
 
   " TOML を読み込み、キャッシュしておく
   call dein#load_toml(s:toml,      {'lazy': 0})
   call dein#load_toml(s:lazy_toml, {'lazy': 1})
+  call dein#load_toml(s:lazy_ddc_toml, {'lazy': 1})
 " 設定終了
   call dein#end()
   call dein#save_state()

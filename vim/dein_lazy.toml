@@ -1,44 +1,25 @@
 # begin of section lsp
-[[plugins]]
-repo = 'prabirshrestha/async.vim'
-on_event = 'InsertEnter'
-source = 'vim-lsp'
+[[plugins]] # dependency for defx
+repo =  'roxma/nvim-yarp'
 
-# begin of section complete
-[[plugins]]
-repo = 'Shougo/deoplete.nvim'
-depends = ['nvim-yarp','vim-hug-neovim-rpc']
-on_event = 'InsertEnter'
-hook_add = '''
-let g:deoplete#enable_at_startup = 1
-'''
-
-[[plugins]]
-repo = 'lighttiger2505/deoplete-vim-lsp'
-on_event = 'InsertEnter'
-depends = [ 'deoplete.nvim']
-hook_add = '''
-imap <expr><tab> pumvisible() ? "\<C-n>" :
-        \ neosnippet#expandable_or_jumpable() ?
-        \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
-'''
+[[plugins]] # dependency for defx
+repo =  'roxma/vim-hug-neovim-rpc'
 
 [[plugins]]
 repo = 'ujihisa/neco-look'
 on_event = 'InsertEnter'
-depends = [ 'deoplete.nvim']
-
 
 # begin of section complete::snippetes
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
 on_event = 'InsertEnter'
+on_cmd=['Neo']
 
 [[plugins]]
 repo =  'Shougo/neosnippet.vim'
 depends = [ 'neosnippet-snippets']
 on_event = 'InsertEnter'
-hook_add='''
+hook_source='''
 let g:neosnippet#snippets_directory = expand('~/.config/vim/rc/snippets')
 imap <expr><C-k> neosnippet#expandable_or_jumpable() ?
 			\ "\<Plug>(neosnippet_expand_or_jump)" : "\<C-k>"
@@ -60,14 +41,12 @@ repo = 'prabirshrestha/asyncomplete-neosnippet.vim'
 on_event = 'InsertEnter'
 depends=['neosnippet.vim']
 
-
 # end of section complete::snippets
 # end of section complete
 
 [[plugins]]
 repo = 'ajpaulson/julia-syntax.vim'
 on_ft = 'julia'
-depends=['deoplete.nvim']
 
 # this section is not supported language by lsp
 [[plugins]]
@@ -88,10 +67,11 @@ on_event = 'InsertEnter'
 # end of this section surroundings
 [[plugins]]
 repo ="kristijanhusak/defx-icons"
+on_source = 'defx.nvim'
 
 [[plugins]]
 repo = 'Shougo/defx.nvim'
-depends = ['nvim-yarp','vim-hug-neovim-rpc','defx-icons']
+depends = ['nvim-yarp','vim-hug-neovim-rpc']
 on_cmd=['Defx']
 hook_source='''
 call defx#custom#column('icon', {
@@ -183,11 +163,3 @@ autocmd FileType defx call s:defx_my_settings()
 	endfunction
 '''
 
-[[plugins]]
-repo = 'rhysd/vim-grammarous'
-on_ft = 'tex'
-hook_add = '''
-let g:grammarous#default_comments_only_filetypes = {
-\ '*' : v:false, 'help' : v:false, 'tex' : v:true,
-\ }
-'''
