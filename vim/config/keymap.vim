@@ -1,6 +1,6 @@
-"keymap.vim
+" keymap.vim
 
-"分割
+" 分割
 nnoremap ss :<C-u>split<CR>
 nnoremap sv :<C-u>vsplit<CR>
 nnoremap sj <C-w>j
@@ -8,7 +8,7 @@ nnoremap sk <C-w>k
 nnoremap sl <C-w>l
 nnoremap sh <C-w>h
 
-"jjで<ESC>にする
+" jjで<ESC>にする
 inoremap <silent> jj <ESC>
 
 " <Space>wで:wとか

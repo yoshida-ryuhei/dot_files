@@ -6,8 +6,8 @@ if has('persistent_undo')
 	endif
 
 	if ! isdirectory(vim_undo_dir)
-		echo vim_undo_dir." is not made!"
-		throw "ERROR".vim_undo_dir." is not made!"
+		echo vim_undo_dir." is not made!" 
+		throw "ERROR".vim_undo_dir." is not made!" 
 	endif
 
 	set undodir=~/.config/vim/undo

@@ -50,3 +50,4 @@ if executable('yapf')
 	augroup END
 endif
 
+nnoremap <silent><F3> :<C-u>call Yapf()<CR>

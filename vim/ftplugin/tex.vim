@@ -44,7 +44,6 @@ function! s:check_tex(status)
 
 	let s:status = "WA"
 
-	let s:hoge="7"
 	let s:error_line_num=matchstr(res, '\(l.\)\@<=\d\+')
 	echo s:error_line_num." has error!"
 	highlight ErrorLine ctermfg=red ctermbg=blue cterm=underline guifg=#ffff60 gui=underline
@@ -203,6 +202,19 @@ augroup auto_compile_tex
 	autocmd!
 	autocmd BufWrite,FileWritePost,FileAppendPost *.tex call g:Myconfig_tex_build()
 augroup END
+
+" auto format tool for latexindent
+function! s:latexindent()
+	let now_line = line(".")
+	exec ":%! latexindent --modifylinebreaks --local --logfile=/dev/null"
+	exec ":" . now_line
+endfunction
+
+function! LaTexIndent()
+	call s:latexindent()
+endfunction
+
+nnoremap <silent><F3> :<C-u>call LaTexIndent()<CR>
 
 let g:tex_conceal=''
 nnoremap <silent> <Space>t :call g:Myconfig_tex_build()<CR>

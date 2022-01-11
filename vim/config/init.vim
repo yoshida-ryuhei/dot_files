@@ -1,9 +1,9 @@
-"viとの互換性を無効にする(INSERT中にカーソルキーが有効になる)
+" disable compability to vi (enable cursor when insert mode)
 set nocompatible
 "カーソルを行頭，行末で止まらないようにする
 set whichwrap=b,s,h,l,<,>,[,]
 
-"BSで削除できるものを指定する
+" extend backspace so that the indent, eol (End of Line) and start.
 set backspace=indent,eol,start
 
 
@@ -11,10 +11,10 @@ set title			"タイトル表示
 set autoindent
 set tabstop=4
 set ignorecase
-set smartcase
 set background=dark	"暗くする
 set number			"行番号をふる
-set smartindent		"自動インデント
+" auto indent
+set smartindent
 set completeopt=menuone
 set shiftwidth=4
 filetype detect
@@ -31,7 +31,6 @@ set showmatch matchtime=1
 "コードの色分け
 syntax on
 filetype indent on
-set hlsearch
 
 " 現在の行に、下線を表示する
 set cursorline
@@ -48,8 +47,3 @@ augroup vimrcEx
 	autocmd BufRead * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 augroup END
 
-augroup auto_defx
-	autocmd!
-	autocmd StdinReadPre * let s:std_in=1
-	autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | Defx -split=vertical | endif
-augroup END
