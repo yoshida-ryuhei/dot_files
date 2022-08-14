@@ -15,4 +15,3 @@ inoremap <silent> jj <ESC>
 nnoremap <silent> <Space>w :<C-u>w<CR>
 nnoremap <silent> <Space>q :<C-u>q<CR>
 nnoremap <silent> <Space>g :Termdiff<CR>
-nnoremap <silent><C-n> :<C-u>Defx -split=vertical -toggle -winwidth=30<CR>

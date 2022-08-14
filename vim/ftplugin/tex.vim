@@ -5,6 +5,11 @@ let s:word_num ="0"
 augroup vimproc-async-receive-test
 augroup END
 
+let g:tex_conceal=''
+setlocal conceallevel=2
+setlocal concealcursor=
+setlocal spell
+
 " this comman is done just before saving files
 " TODO please repair this
 augroup myconfig-tex-count-words
@@ -184,7 +189,11 @@ function! g:Open_pdf()
 			let l:open_command = 'open'
 		elseif has("unix")
 			" unix固有の設定
-			let l:open_command = 'xdg-open'
+			if executable('okular')
+				let l:open_command = 'okular --unique'
+			else
+				let l:open_command = 'xdg-open'
+			endif
 		else
 			echomsg 'unknown OS'
 			throw 'unknown OS'
@@ -214,8 +223,24 @@ function! LaTexIndent()
 	call s:latexindent()
 endfunction
 
+function! s:call_synctex()
+	let now_line = line(".")
+	let build_dir = expand("%:p:h").'/build/'
+	let pdf_path = build_dir.expand("%:t:r").'.pdf'
+	let rtn = vimproc#system("okular --unique \"".pdf_path."#src:".now_line." ".expand("%:p")."\"")
+	echomsg rtn
+endfunction
+
+function! CallSynctex()
+	if executable('okular')
+		call s:call_synctex()
+	else
+		echoms 'please install okular'
+	endif
+endfunction
+nnoremap <silent> <Space><CR> :silent call g:CallSynctex()<CR>
+
 nnoremap <silent><F3> :<C-u>call LaTexIndent()<CR>
 
-let g:tex_conceal=''
 nnoremap <silent> <Space>t :call g:Myconfig_tex_build()<CR>
 nnoremap <silent> <Space>o :silent call g:Open_pdf()<CR>

@@ -1,0 +1,184 @@
+[[plugins]]
+repo = 'Shougo/ddu-commands.vim'
+depends = 'ddu.vim'
+on_cmd = 'Ddu'
+
+
+[[plugins]]
+repo = 'Shougo/ddu.vim'
+depends = 'denops.vim'
+hook_add = '''
+nnoremap gu <Cmd>Ddu -name=search rg -ui-param-ignoreEmpty -source-param-input=`input('Pattern: ')`<CR>
+nnoremap ge <Cmd>Ddu file_rec<CR>
+nnoremap gE <Cmd>Ddu file<CR>
+nnoremap gb <Cmd>Ddu buffer<CR>
+nnoremap <C-n> <Cmd>Ddu -name=filer<CR>
+'''
+hook_source = '''
+" You must set the default ui.
+" Note: ff ui https://github.com/Shougo/ddu-ui-ff
+call ddu#custom#patch_global({
+    \ 'ui': 'ff',
+    \ })
+" NOTE: keymapping for ddu-ui-ff from a doc of the repository
+autocmd FileType ddu-ff call s:ddu_ff_my_settings()
+function! s:ddu_ff_my_settings() abort
+  nnoremap <buffer> <CR> <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
+  nnoremap <buffer> <Space>  <Cmd>call ddu#ui#ff#do_action('toggleSelectItem')<CR>
+  nnoremap <buffer> i <Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>
+  nnoremap <buffer> q <Cmd>call ddu#ui#ff#do_action('quit')<CR>
+  nnoremap <buffer> p <Cmd>call ddu#ui#ff#do_action('preview')<CR>
+endfunction
+
+autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
+function! s:ddu_filter_my_settings() abort
+  inoremap <buffer> <CR> <Esc><Cmd>close<CR>
+  nnoremap <buffer> <CR> <Cmd>close<CR>
+endfunction
+
+" You must set the default action.
+" Note: file kind
+" https://github.com/Shougo/ddu-kind-file
+call ddu#custom#patch_global({
+    \   'kindOptions': {
+    \     'file': {
+    \       'defaultAction': 'open',
+    \     },
+    \   }
+    \ })
+
+" Specify matcher.
+" Note: matcher_substring filter
+" https://github.com/Shougo/ddu-filter-matcher_substring
+call ddu#custom#patch_global({
+    \   'sourceOptions': {
+    \     '_': {
+    \       'matchers': ['matcher_substring'],
+    \     },
+    \   }
+    \ })
+
+call ddu#custom#patch_global({
+    \   'sourceParams' : {
+    \     'rg' : {
+    \       'args': ['--column', '--no-heading', '--color', 'never'],
+    \     },
+    \   },
+    \ })
+
+" Set default sources
+" Note: file source
+" https://github.com/Shougo/ddu-source-file
+call ddu#custom#patch_global({
+    \ 'sources': [{'name': 'file', 'params': {}}],
+    \ })
+
+" open file from current files without recurisve
+call ddu#custom#patch_local('files', {
+    \ 'sources': [
+    \   {'name': 'file', 'params': {}},
+    \ ],
+    \ })
+
+" open file from current files with recurisve
+" https://github.com/Shougo/ddu-source-file_rec
+call ddu#custom#patch_local('file_rec', {
+    \ 'sources': [
+    \   {'name': 'file_rec', 'params': {'path': expand('~')}},
+    \ ],
+    \ })
+
+
+"" For ddu-ui-filer
+"" https://github.com/Shougo/ddu-ui-filer
+call ddu#custom#patch_local('filer',{
+	\ 'ui': 'filer',
+    \ 'sources': [{'name': 'file', 'params': {}}],
+	\ 'uiOptions': {
+	\   'toggle': v:true,
+	\ },
+    \ 'sourceOptions': {
+    \   '_': {
+    \     'columns': ['filename'],
+    \   },
+    \ },
+    \ 'kindOptions': {
+    \   'file': {
+    \     'defaultAction': 'open',
+    \   },
+    \ },
+    \ 'uiParams': {
+    \   'filer': {
+    \     'split': 'vertical',
+    \     'splitDirection': 'topleft',
+    \     'winWidth': 30,
+    \   }
+    \ },
+    \ })
+autocmd FileType ddu-filer call s:ddu_filer_my_settings()
+function! s:ddu_filer_my_settings() abort
+  nnoremap <buffer><silent> <CR>
+        \ <Cmd>call ddu#ui#filer#do_action('itemAction')<CR>
+  nnoremap <buffer><silent> <Space>
+        \ <Cmd>call ddu#ui#filer#do_action('toggleSelectItem')<CR>
+  nnoremap <buffer> o
+        \ <Cmd>call ddu#ui#filer#do_action('expandItem',
+        \ {'mode': 'toggle'})<CR>
+  nnoremap <buffer><silent> q
+        \ <Cmd>call ddu#ui#filer#do_action('quit')<CR>
+endfunction
+
+" Specify source with params
+" Note: file_rec source
+" TODO find-> ag or ack may be good c.f. https://qiita.com/okamos/items/4e1665ecd416ef77df7c
+
+" For ripgrep
+call ddu#custom#patch_local('rg',{
+    \   'sourceParams' : [
+	\       {'args': ['--column', '--no-heading', '--color', 'never']},
+    \ ],
+    \ })
+'''
+
+[[plugins]]
+repo = 'Shougo/ddu-ui-ff'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-ui-filer'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-column-filename'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-kind-file'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-filter-matcher_substring'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-source-file'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-source-file_rec'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'shun/ddu-source-buffer'
+on_source = 'ddu.vim'
+
+
+[[plugins]]
+repo = 'shun/ddu-source-rg'
+on_source = 'ddu.vim'
+hook_post_update = '''
+if ! executable('rg')
+	echomsg "Please Install rg"
+endif
+'''
+

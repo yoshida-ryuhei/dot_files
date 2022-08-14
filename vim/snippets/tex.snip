@@ -1,0 +1,66 @@
+snippet table
+	\begin{table}[htb]
+		\begin{center}
+		\caption{name of table}
+			\begin{tabular}{lcrr} \toprule
+				${1}
+			\end{tabular}
+		\end{center}
+	\end{table}
+
+snippet \bmatrix
+	\begin{bmatrix}
+		${1}
+	\end{bmatrix}
+
+snippet \pmatrix
+	\begin{pmatrix}
+		${1}
+	\end{pmatrix}
+
+snippet \screen
+	\begin{screen}
+		${1}
+	\end{screen}
+
+snippet PR
+	\paragraph{\(pr)\)}\ \\\
+	${1}
+
+snippet enumerate
+	\begin{enumerate}
+		\setcounter{enumi}{0} % start with 0+1 = 1
+		\renewcommand{\labelenumi}{(\arabic{enumi})}%(hoge)にする
+		\item ${1}
+	\end{enumerate}
+
+snippet itemize
+	\begin{itemize}
+		\renewcommand{\labelenumi}{ (hoge) } % (hoge) になる
+		\item ${1}
+	\end{itemize}
+
+snippet \pr
+	\paragraph{\(pr)\)}\ \\\
+	${1}
+
+snippet \itembox
+	\begin{itembox}[l}{${1}}
+	\label{${2}}
+		${3}
+	\end{itembox}
+
+snippet kawasaki
+    \emph{ibm\_kawasaki}
+
+snippet cnot
+    \textsc{cnot}
+
+snippet figure
+alias   \begin{figure} \figure
+	\begin{figure}[${1}]
+		\centering
+		\includegraphics[${2:width=${3:\hsize\}}]{${4}}
+		\caption{${5}}
+		\label{${6}}
+	\end{figure}

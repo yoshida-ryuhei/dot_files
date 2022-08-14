@@ -39,6 +39,16 @@ function! s:yapf() range
   call cursor(a:firstline, 1)
 endfunction
 
+function! s:black()
+	let now_line = line(".")
+	exec ':%! black --quiet - '
+	exec ':' . now_line
+endfunction
+
+function! Black()
+	echomsg s:black()
+endfunction
+
 function! Yapf()
 	call s:yapf()
 endfunction
@@ -50,4 +60,5 @@ if executable('yapf')
 	augroup END
 endif
 
-nnoremap <silent><F3> :<C-u>call Yapf()<CR>
+"nnoremap <silent><F3> :<C-u>call Yapf()<CR>
+nnoremap <silent><F3> :<C-u>call Black()<CR>

@@ -35,6 +35,12 @@ filetype indent on
 " 現在の行に、下線を表示する
 set cursorline
 
+set list
+set listchars=tab:▸-
+noremap <F5> :set list!<CR>
+inoremap <F5> <C-o>:set list!<CR>
+cnoremap <F5> <C-c>:set list!<CR>
+
 " delete last space before saving file https://vim.fandom.com/wiki/Remove_unwanted_spaces
 augroup vim_del_end_space
 	autocmd!
@@ -47,3 +53,26 @@ augroup vimrcEx
 	autocmd BufRead * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 augroup END
 
+" configureation for python3
+if has("mac")
+	let s:python_path = '/opt/homebrew/opt/python@3.10/bin/python3'
+elseif has("unix")
+	let s:python_path = '/usr/bin/python3'
+else
+	echomsg 'unknown OS'
+	throw 'unknown OS'
+endif
+
+let g:python3_host_prog=s:python_path
+"set pythonthreehome=s:python_path
+"echomsg s:python_path.' will be added to sys.path'
+let s:python_lib_path = system(s:python_path.' -c "import sys;print(sys.path[-1])"')
+"echomsg s:python_lib_path.' will be added to sys.path'
+py3 <<EOM
+import sys
+import vim
+
+python_lib_path = vim.eval('s:python_lib_path').strip()
+if not python_lib_path in sys.path:
+	sys.path.insert(0, python_lib_path)
+EOM
