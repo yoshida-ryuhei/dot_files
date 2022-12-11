@@ -163,3 +163,13 @@ autocmd FileType defx call s:defx_my_settings()
 	endfunction
 '''
 
+[[plugins]]
+repo = "tpope/vim-fugitive"
+on_cmd = 'Git'
+hook_add = '''
+nnoremap gl <Cmd>Git blame<CR>
+autocmd FileType fugitiveblame call s:fugitive_blame_my_settings()
+function! s:fugitive_blame_my_settings() abort
+  nnoremap <buffer> q <Cmd>quit<CR>
+endfunction
+'''
