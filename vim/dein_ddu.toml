@@ -9,10 +9,11 @@ repo = 'Shougo/ddu.vim'
 depends = 'denops.vim'
 hook_add = '''
 nnoremap gu <Cmd>Ddu -name=search rg -ui-param-ignoreEmpty -source-param-input=`input('Pattern: ')`<CR>
-nnoremap ge <Cmd>Ddu file_rec<CR>
-nnoremap gE <Cmd>Ddu file<CR>
-nnoremap gb <Cmd>Ddu buffer<CR>
-nnoremap <C-n> <Cmd>Ddu -name=filer<CR>
+nnoremap ge <Cmd>Ddu file<CR>
+nnoremap gE <Cmd>Ddu file_rec<CR>
+nnoremap gb <Cmd>Ddu buffer -ui-option-toggle=v:true<CR>
+nnoremap gr <Cmd>Ddu vim-lsp -source-param-method='references' -source-param-bufnr=`bufnr()`<CR>
+nnoremap <C-n> <Cmd>Ddu -name=filer -ui-option-toggle=v:true<CR>
 '''
 hook_source = '''
 " You must set the default ui.
@@ -30,10 +31,12 @@ function! s:ddu_ff_my_settings() abort
   nnoremap <buffer> p <Cmd>call ddu#ui#ff#do_action('preview')<CR>
 endfunction
 
+" see ddu-ui-ff-example in https://github.com/Shougo/ddu-ui-ff/blob/main/doc/ddu-ui-ff.txt
 autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
 function! s:ddu_filter_my_settings() abort
-  inoremap <buffer> <CR> <Esc><Cmd>close<CR>
-  nnoremap <buffer> <CR> <Cmd>close<CR>
+  inoremap <buffer> <CR> <Esc><Cmd>call ddu#ui#ff#close()<CR>
+  inoremap <buffer> jj <Esc><Cmd>call ddu#ui#ff#close()<CR>
+  nnoremap <buffer> <CR> <Cmd><Cmd>call ddu#ui#ff#close()<CR>
 endfunction
 
 " You must set the default action.
@@ -53,7 +56,7 @@ call ddu#custom#patch_global({
 call ddu#custom#patch_global({
     \   'sourceOptions': {
     \     '_': {
-    \       'matchers': ['matcher_substring'],
+    \       'matchers': ['matcher_fzf'],
     \     },
     \   }
     \ })
@@ -99,7 +102,7 @@ call ddu#custom#patch_local('filer',{
 	\ },
     \ 'sourceOptions': {
     \   '_': {
-    \     'columns': ['filename'],
+    \     'columns': ['icon_filename'],
     \   },
     \ },
     \ 'kindOptions': {
@@ -117,15 +120,14 @@ call ddu#custom#patch_local('filer',{
     \ })
 autocmd FileType ddu-filer call s:ddu_filer_my_settings()
 function! s:ddu_filer_my_settings() abort
-  nnoremap <buffer><silent> <CR>
-        \ <Cmd>call ddu#ui#filer#do_action('itemAction')<CR>
-  nnoremap <buffer><silent> <Space>
-        \ <Cmd>call ddu#ui#filer#do_action('toggleSelectItem')<CR>
-  nnoremap <buffer> o
-        \ <Cmd>call ddu#ui#filer#do_action('expandItem',
-        \ {'mode': 'toggle'})<CR>
-  nnoremap <buffer><silent> q
-        \ <Cmd>call ddu#ui#filer#do_action('quit')<CR>
+  nnoremap <buffer><expr> <CR> ddu#ui#filer#is_tree() ?  "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" : "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open'})<CR>"
+  nnoremap <buffer><silent> <Space> <Cmd>call ddu#ui#filer#do_action('toggleSelectItem')<CR>
+  nnoremap <buffer> o <Cmd>call ddu#ui#filer#do_action('expandItem', {'mode': 'toggle'})<CR>
+  nnoremap <buffer><silent> q <Cmd>call ddu#ui#filer#do_action('quit')<CR>
+  nnoremap <buffer> ~ <Cmd>call ddu#ui#filer#do_action('itemAction',  {'name': 'narrow', 'params': {'path': expand('~')}})<CR>
+  nnoremap <buffer> h <Cmd>call ddu#ui#filer#do_action('itemAction',  {'name': 'narrow', 'params': {'path': ".."}})<CR>
+  nnoremap <buffer> h <Cmd>call ddu#ui#filer#do_action('itemAction',  {'name': 'narrow', 'params': {'path': ".."}})<CR>
+  nnoremap <buffer><expr> l ddu#ui#filer#is_tree() ?  "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" : "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open'})<CR>"
 endfunction
 
 " Specify source with params
@@ -137,6 +139,15 @@ call ddu#custom#patch_local('rg',{
     \   'sourceParams' : [
 	\       {'args': ['--column', '--no-heading', '--color', 'never']},
     \ ],
+    \ })
+call ddu#custom#patch_global({
+    \   'sourceParams' : {
+    \     'vim-lsp' : {
+    \       'method': 'references',
+    \       'highlight_path': 'Directory',
+    \       'highlight_place': 'Label',
+    \     },
+    \   },
     \ })
 '''
 
@@ -161,6 +172,11 @@ repo = 'Shougo/ddu-filter-matcher_substring'
 on_source = 'ddu.vim'
 
 [[plugins]]
+repo = 'yuki-yano/ddu-filter-fzf'
+on_source = 'ddu.vim'
+
+
+[[plugins]]
 repo = 'Shougo/ddu-source-file'
 on_source = 'ddu.vim'
 
@@ -182,3 +198,11 @@ if ! executable('rg')
 endif
 '''
 
+[[plugins]]
+repo = 'yoshida-ryuhei/ddu-column-icon_filename'
+rev = 'dev/add_icon'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'yoshida-ryuhei/ddu-source-vim-lsp'
+on_source = ['ddu.vim', 'vim-lsp']
