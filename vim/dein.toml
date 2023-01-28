@@ -26,16 +26,6 @@ repo = 'osyo-manga/vim-precious'
 depends = ['context_filetype.vim']
 
 [[plugins]]
-repo = 'twitvim/twitvim'
-hook_add = '''
-let twitvim_token_file = expand("~/.config/vim/.twitvim.token")
-let twitvim_force_ssl = 1
-let twitvim_count = 100
-nnoremap <silent><Space>f : <C-u>FriendsTwitter<CR>
-nnoremap <silent><Space>p : <C-u>PosttoTwitter<CR>
-'''
-
-[[plugins]]
 repo = 'thinca/vim-quickrun'
 depends=['vimproc']
 hook_add='''

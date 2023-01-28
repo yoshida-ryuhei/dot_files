@@ -4,6 +4,7 @@ repo = 'Shougo/ddc.vim'
 on_event = 'InsertEnter'
 depends = ['pum.vim','denops.vim']
 hook_source = '''
+call ddc#custom#patch_global('ui', 'pum')
 call ddc#custom#patch_global('completionMenu', 'pum.vim')
 call ddc#custom#patch_global('sources', ['vim-lsp', 'neosnippet', 'file', 'around'])
 call ddc#custom#patch_global('sourceOptions', {
@@ -33,56 +34,73 @@ call ddc#custom#patch_global('sourceParams', {
 inoremap <silent><expr> <TAB>
 			\ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
 			\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-			\ '<TAB>' : ddc#manual_complete()
+			\ '<TAB>' : ddc#map#manual_complete()
 inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
 inoremap <C-n>   <Cmd>call pum#map#select_relative(+1)<CR>
 inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
 inoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
 inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+
 call ddc#custom#patch_global('autoCompleteEvents', [
     \ 'InsertEnter', 'TextChangedI', 'TextChangedP',
     \ 'CmdlineEnter', 'CmdlineChanged',
     \ ])
+call ddc#custom#patch_global('completionMenu', 'pum.vim')
+call ddc#custom#patch_global('autoCompleteEvents',
+  \ ['InsertEnter', 'TextChangedI', 'TextChangedP', 'CmdlineChanged'])
 
 nnoremap :       <Cmd>call CommandlinePre()<CR>:
 
-function! CommandlinePre() abort
-  " Note: It disables default command line completion!
-  cnoremap <expr> <Tab>
-  \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
-  \ ddc#manual_complete()
-  cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
-  cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
-  cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+  function! CommandlinePre() abort
+    cnoremap <Tab>   <Cmd>call pum#map#insert_relative(+1)<CR>
+    cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+    cnoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
+    cnoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
+    cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+    cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+    " Overwrite sources
+    if !exists('b:prev_buffer_config')
+      let b:prev_buffer_config = ddc#custom#get_buffer()
+    endif
+    call ddc#custom#patch_buffer('cmdlineSources', ['necovim', 'around'])
+    autocmd User DDCCmdlineLeave ++once call CommandlinePost()
+    autocmd InsertEnter <buffer> ++once call CommandlinePost()
+    " Enable command line completion
+    call ddc#enable_cmdline_completion()
+  endfunction
 
-  " Overwrite sources
-  let s:prev_buffer_config = ddc#custom#get_buffer()
-  call ddc#custom#patch_buffer('sources',
-          \ ['cmdline', 'cmdline-history', 'around'])
+  function! CommandlinePost() abort
+    silent! cunmap <Tab>
+    silent! cunmap <S-Tab>
+    silent! cunmap <C-n>
+    silent! cunmap <C-p>
+    silent! cunmap <C-y>
+    silent! cunmap <C-e>
+    " Restore sources
+    if exists('b:prev_buffer_config')
+      call ddc#custom#set_buffer(b:prev_buffer_config)
+      unlet b:prev_buffer_config
+    else
+      call ddc#custom#set_buffer({})
+    endif
+  endfunction
 
-  autocmd User DDCCmdlineLeave ++once call CommandlinePost()
-
-  " Enable command line completion
-  call ddc#enable_cmdline_completion()
-  call ddc#enable()
-endfunction
-function! CommandlinePost() abort
-  " Restore sources
-  call ddc#custom#set_buffer(s:prev_buffer_config)
-  cunmap <Tab>
-endfunction
 call ddc#enable()
 '''
 
+[[plugins]] # dependency for ddc, ui for pum.vim
+repo = 'Shougo/ddc-ui-pum'
+on_source = 'ddc.vim'
+
 [[plugins]] # dependency for ddc, to do Around completion
-repo = 'Shougo/ddc-around'
+repo = 'Shougo/ddc-source-around'
 on_source = 'ddc.vim'
 
 [[plugins]] # dependency for ddc, to do Heading matche
 repo = 'Shougo/ddc-matcher_head'
 on_source = 'ddc.vim'
 
-[[plugins]] # dependency for ddc, to avoide Removes overlapped text for ddc.vim
+[[plugins]] # dependency for ddc, to avoide Removes overlapped text in a candidate`s word for ddc.vim
 repo = 'Shougo/ddc-converter_remove_overlap'
 on_source = 'ddc.vim'
 
@@ -101,6 +119,10 @@ depends = ['vim-lsp']
 
 [[plugins]] # dependency for ddc, for cmdline completion
 repo = 'Shougo/ddc-cmdline'
+on_source = 'ddc.vim'
+
+[[plugins]] # dependency for ddc, for cmdline completion
+repo = 'Shougo/neco-vim'
 on_source = 'ddc.vim'
 
 [[plugins]] # dependency for ddc, for cmdline-history completion
