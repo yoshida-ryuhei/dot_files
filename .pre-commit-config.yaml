@@ -20,3 +20,7 @@ repos:
     rev: v1.6.25
     hooks:
       - id: actionlint
+  - repo: https://github.com/mrtazz/checkmake.git
+    rev: 0.2.2
+    hooks:
+      - id: checkmake
