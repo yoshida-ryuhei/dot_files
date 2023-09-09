@@ -10,6 +10,12 @@ repos:
     rev: v0.10.0
     hooks:
       - id: yamlfmt
+  - repo: https://github.com/cmhughes/latexindent.pl
+    rev: V3.22.2
+    hooks:
+      - id: latexindent
+        args: [-s]
+        files: '.*\.(tex|sty)'
   - repo: https://github.com/rhysd/actionlint/
     rev: v1.6.25
     hooks:
