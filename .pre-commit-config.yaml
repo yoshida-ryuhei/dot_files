@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: deno-fmt
+        name: deno fmt
+        entry: deno fmt
+        language: system
+        types_or: [javascript, jsx, ts, markdown]
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.10.0
+    hooks:
+      - id: yamlfmt
+  - repo: https://github.com/cmhughes/latexindent.pl
+    rev: V3.22.2
+    hooks:
+      - id: latexindent
+        args: [-s]
+        files: '.*\.(tex|sty)'
+  - repo: https://github.com/rhysd/actionlint/
+    rev: v1.6.25
+    hooks:
+      - id: actionlint
+  - repo: https://github.com/mrtazz/checkmake.git
+    rev: 0.2.2
+    hooks:
+      - id: checkmake
