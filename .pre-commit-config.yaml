@@ -2,7 +2,7 @@ repos:
   - repo: local
     hooks:
       - id: deno-fmt
-        name: deno fmt
+        name: deno fmt for deno, markdown
         entry: deno fmt
         language: system
         types_or: [javascript, jsx, ts, markdown]
