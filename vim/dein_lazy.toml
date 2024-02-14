@@ -93,46 +93,19 @@ repo = 'mattn/vim-lsp-settings'
 on_source = 'vim-lsp'
 hook_source='''
 let l:status = 0
-" TODO auto detect poetry env, this is insanly slow.
-let l:cwd = getcwd()
-let l:i = 0
-let l:venv = v:none
-while  l:i < 10
-	let l:venv = l:cwd.'/.venv/'
-	if isdirectory(l:venv)
-		echomsg 'l:venv find at `'.l:venv.'`'
-		let l:status = 1
-		break
-	endif
-	let l:cwd = l:cwd.'/..'
-	let l:i = l:i + 1
-endwhile
 
 " TODO apply this script if only neccessary.
-if l:status == 0
 	let g:lsp_settings = {
 		\   'texlab': {
 		\   'whitelist' : ['plaintex', 'tex','sty']
+		\   },
+		\   'pyright-langserver': {
+		\     'root_uri_patterns': ['pyproject.toml'],
 		\   },
 		\  'efm-langserver': {
 		\    'disabled': 0,
 		\   },
 		\}
-else
-	let g:lsp_settings = {
-		\   'texlab': {
-		\   'whitelist' : ['plaintex', 'tex','sty']
-		\   },
-		\   'pyright-langserver':{
-		\     'python' :{
-		\       'venvPath': l:venv,
-		\     }
-		\   },
-		\  'efm-langserver': {
-		\    'disabled': 0,
-		\   },
-		\}
-endif
 '''
 
 [[plugins]]
